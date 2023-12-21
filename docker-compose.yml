@@ -1,0 +1,39 @@
+version: '3.9'
+
+services:
+    php:
+      container_name: cafecms
+      build: .
+      image: cafecms/php
+      volumes:
+        - .:/var/www
+      extra_hosts:
+        - "cafecms.mn:127.0.0.1"
+      hostname: cafecms.mn
+      domainname: mn
+      ports:
+        - "80:80"
+      depends_on:
+        - db
+    db:
+      container_name: cafecms_database
+      image: mysql
+      restart: always
+      environment:
+        MYSQL_ROOT_PASSWORD: admin
+        MYSQL_DATABASE: cafecms
+        MYSQL_USER: naghlani
+        MYSQL_PASSWORD: naghlani
+      ports:
+        - "9906:3306"
+      volumes:
+        - ./mysql-data:/var/lib/mysql
+    phpmyadmin:
+      container_name: cafecms_padmin
+      image: phpmyadmin/phpmyadmin
+      ports:
+        - "8080:80"
+      environment:
+        PMA_HOST: db
+      depends_on:
+        - db
